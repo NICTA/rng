@@ -164,6 +164,5 @@ A random generator can be constructed by combining random generators for `String
 
 ### Documentation
 
-Documentation for this library is provided by this document, example usages and static-type verification. Any program
-that uses this library is likely to be a useful and sound program. The statically verified constraints provided by this
+Documentation for this library is provided by this document, example usages and static-type verification. The statically verified constraints provided by this
 library are a consequence of the pure-functional programming interface.
