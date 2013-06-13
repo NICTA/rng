@@ -1,5 +1,6 @@
 package com.nicta
 package rng
+import Rng._
 
 import scalaz._, Free._, Scalaz._, NonEmptyList._, Digit._, Leibniz._, Validation._, effect._
 
