@@ -1,13 +1,13 @@
 import sbt._
 import Keys._
-import com.typesafe.sbt.pgp.PgpKeys._
 import Tools.onVersion
 
 object build extends Build {
   type Sett = Project.Setting[_]
 
   val base = Defaults.defaultSettings ++ ScalaSettings.all ++ Seq[Sett](
-      organization := "NICTA"
+      name := "rng"
+    , organization := "com.nicta"
     , version := "1.0-SNAPSHOT"
   )
 
@@ -43,18 +43,4 @@ object build extends Build {
     , javaOptions in run <++= (fullClasspath in Runtime) map { cp => Seq("-cp", sbt.Build.data(cp).mkString(":")) }
     )
   )
-
-  publishMavenStyle := true
-
-  publishArtifact in Test := false
-
-  pomIncludeRepository := { _ => false }
-
-  publishTo <<= version.apply(v => {
-    val artifactory = "http://etd-packaging.research.nicta.com.au/artifactory/"
-    val flavour = if (v.trim.endsWith("SNAPSHOT")) "libs-snapshot-local" else "libs-release-local"
-    val url = artifactory + flavour
-    val name = "etd-packaging.research.nicta.com.au"
-    Some(Resolver.url(name, new URL(url)))
-  })
 }
