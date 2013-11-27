@@ -1,6 +1,7 @@
 import sbt._
 import Keys._
 import Tools.onVersion
+import sbtrelease.ReleasePlugin._
 
 object build extends Build {
   type Sett = Project.Setting[_]
@@ -22,7 +23,7 @@ object build extends Build {
   val rng = Project(
     id = "rng"
   , base = file(".")
-  , settings = base ++ ReplSettings.all ++ PublishSettings.all ++ InfoSettings.all ++ Seq[Sett](
+  , settings = base ++ ReplSettings.all ++ releaseSettings ++ PublishSettings.all ++ InfoSettings.all ++ Seq[Sett](
       name := "rng"
     , libraryDependencies <++= onVersion(
         all = Seq(scalaz, scalazEffect, scalazCheck, scalacheck)
