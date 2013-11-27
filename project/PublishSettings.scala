@@ -15,7 +15,10 @@ object PublishSettings {
   , licenses := Seq("BSD-3-Clause" -> url("http://www.opensource.org/licenses/BSD-3-Clause"))
   , homepage := Some(url("https://github.com/NICTA/rng"))
   , useGpg := true
-  , credentials := Seq(Credentials(Path.userHome / ".sbt" / "scoobi.credentials"))
+  , credentials ++= Seq(
+      Credentials(Path.userHome / ".credentials")
+    , Credentials(Path.userHome / ".sbt" / "scoobi.credentials")
+    )
   )
 
   lazy val pom: Sett =
@@ -49,11 +52,11 @@ object PublishSettings {
       )
 
   lazy val publish: Sett =
-    publishTo <<= version.apply(v => {
-      val nexus = "https://oss.sonatype.org/"
-      if (v.trim.endsWith("SNAPSHOT"))
-        Some("snapshots" at nexus + "content/repositories/snapshots")
-      else
-        Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-    })
+    publishTo <<= version { v =>
+      val artifactory = "http://etd-packaging.research.nicta.com.au/artifactory/"
+      val flavour = if (v.trim.endsWith("SNAPSHOT")) "libs-snapshot-local" else "libs-release-local"
+      val url = artifactory + flavour
+      val name = "etd-packaging.research.nicta.com.au"
+      Some(Resolver.url(name, new URL(url)))
+    }
 }
