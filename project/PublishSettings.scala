@@ -20,14 +20,6 @@ object PublishSettings {
 
   lazy val pom: Sett =
     pomExtra := (
-      <url>https://github.com/NICTA/rng/</url>
-      <licenses>
-        <license>
-          <name>BSD-style</name>
-          <url>http://www.opensource.org/licenses/bsd-license.php</url>
-          <distribution>repo</distribution>
-        </license>
-      </licenses>
       <scm>
         <url>git@github.com:NICTA/rng.git</url>
         <connection>scm:git@github.com:NICTA/rng.git</connection>
@@ -38,8 +30,6 @@ object PublishSettings {
           <name>Tony Morris</name>
           <url>http://tmorris.net/</url>
         </developer>
-      </developers>
-      <developers>
         <developer>
           <id>markhibberd</id>
           <name>Mark Hibberd</name>
