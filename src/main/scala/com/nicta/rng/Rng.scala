@@ -161,6 +161,24 @@ object Rng {
       b <- nextbits(26)
     } yield (b.toLong << a) / (1.toLong << 53).toDouble
 
+  /** @return a Double in the [0, 1[ interval */
+  def unitdouble: Rng[Double] = for {
+    i <- positivedouble
+    j <- positivedoub le
+  } yield
+    if (i == 0 || j == 0 || i == j) 0.0
+    else if (i < j)                 i / j
+    else                            j / i
+
+  /** @return a Float in the [0, 1[ interval */
+  def unitfloat: Rng[Float] = for {
+    i <- positivefloat
+    j <- positivefloat
+  } yield
+    if (i == 0 || j == 0 || i == j) 0
+    else if (i < j)                 i / j
+    else                            j / i
+
   def float: Rng[Float] =
     nextbits(24) map (_ / (1 << 24).toFloat)
 
@@ -355,29 +373,27 @@ object Rng {
     })
 
   def choosedouble(l: Double, h: Double): Rng[Double] =
-    double map (x => {
+    unitdouble map (x => {
       val (ll, hh) = if(h < l) (h, l) else (l, h)
       val diff = hh - ll
-      if(diff == 0)
-        ll
-      else
-        ll + math.abs(x * diff + ll)
+      ll + x * diff
     })
 
   def choosefloat(l: Float, h: Float): Rng[Float] =
-    float map (x => {
+    unitfloat map (x => {
       val (ll, hh) = if(h < l) (h, l) else (l, h)
-      val diff = hh - ll
-      if(diff == 0)
-        ll
-      else
-        ll + math.abs(x * diff + ll)
+
+      if ((ll <= 0 && hh <= 0) || (ll >= 0 && hh >= 0)) ll + (hh - ll) * x
+      else                                              ll * (1 - x) + hh * x
     })
 
   def chooseint(l: Int, h: Int): Rng[Int] =
     int map (x => {
       val (ll, hh) = if(h < l) (h, l) else (l, h)
-      ll + math.abs(x % (hh - ll + 1))
+      // using longs to avoid overflows
+      val diff = hh.toLong - ll.toLong
+      if (diff == 0) ll
+      else           (ll.toLong + math.abs(x.toLong % (diff + 1))).toInt
     })
 
   def oneofL[A](x: NonEmptyList[A]): Rng[A] =
