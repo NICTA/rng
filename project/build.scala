@@ -16,7 +16,7 @@ object build extends Build {
   val scalazCheck = "org.scalaz" %% "scalaz-scalacheck-binding" % "7.0.0" % "test"
   val scalacheck = "org.scalacheck" %% "scalacheck" % "1.10.0" % "test"
   val specs2_1_12_4_1 = "org.specs2" %% "specs2" % "1.12.4.1" % "test"
-  val specs2_1_14 = "org.specs2" %% "specs2" % "1.14" % "test"
+  val specs2_2_3_2 = "org.specs2" %% "specs2" % "2.3.2" % "test"
 
 
   val rng = Project(
@@ -27,7 +27,7 @@ object build extends Build {
     , libraryDependencies <++= onVersion(
         all = Seq(scalaz, scalazEffect, scalazCheck, scalacheck)
       , on292 = Seq(specs2_1_12_4_1)
-      , on210 = Seq(specs2_1_14)
+      , on210 = Seq(specs2_2_3_2)
       )
     )
   )

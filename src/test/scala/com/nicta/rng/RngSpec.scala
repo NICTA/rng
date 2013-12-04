@@ -7,21 +7,43 @@ import org.specs2.matcher._
 object RngSpec extends test.Spec {
   "Rng" should {
     "satisfy monad laws" ! monad.laws[Rng]
-  }
+  }; endp
 
   "chooseint must return a value between low and high" >> prop { (low: Int, high: Int) =>
-    Rng.chooseint(low, high) must beBetween(low, high)
+    Rng.chooseint(low, high) must beBoundedBy(low, high)
+  }
+
+  "chooseint distribution must be more or less uniform" >> {
+    Rng.chooseint(0, 100) must beUniform
   }
 
   "choosedouble must return a value between low and high" >> prop { (low: Double, high: Double) =>
-    Rng.choosedouble(low, high) must beBetween(low, high)
+    Rng.choosedouble(low, high) must beBoundedBy(low, high)
+  }
+
+  "choosedouble distribution must be more or less uniform" >> {
+    Rng.choosedouble(0, 100) must beUniform
   }
 
   "choosefloat must return a value between low and high" >> prop { (low: Float, high: Float) =>
-    Rng.choosefloat(low, high) must beBetween(low, high)
+    Rng.choosefloat(low, high) must beBoundedBy(low, high)
   }
 
-  def beBetween[T : Numeric](low: T, high: T): Matcher[Rng[T]] = { generator: Rng[T] =>
+  "choosefloat distribution must be more or less uniform" >> {
+    Rng.choosefloat(0, 100) must beUniform
+  }
+
+  def beUniform[T : Numeric]: Matcher[Rng[T]] = { generator: Rng[T] =>
+    val n = implicitly[Numeric[T]]
+    val frequencies = generator.fill(100000).run.unsafePerformIO
+      .groupBy(t => n.toInt(t) / 10).toList
+      .map(x => (x._1, x._2.length))
+      .sortBy(_._1).map(_._2)
+
+    frequencies must contain(beBetween(9000, 11000)).forall
+  }
+
+  def beBoundedBy[T : Numeric](low: T, high: T): Matcher[Rng[T]] = { generator: Rng[T] =>
     val (l, h) = if (low <= high) (low, high) else (high, low)
     generator.run.unsafePerformIO must beBetween(l, h)
   }
