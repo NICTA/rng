@@ -17,7 +17,7 @@ object build extends Build {
   val scalacheck = "org.scalacheck" %% "scalacheck" % "1.10.0" % "test"
   val specs2_1_12_4_1 = "org.specs2" %% "specs2" % "1.12.4.1" % "test"
   val specs2_1_14 = "org.specs2" %% "specs2" % "1.14" % "test"
-  val wartremover = "org.brianmckenna" % "wartremover" % "0.4" cross CrossVersion.full
+  val wartremover = "org.brianmckenna" % "wartremover" % "0.5" cross CrossVersion.full
 
 
   val rng = Project(
