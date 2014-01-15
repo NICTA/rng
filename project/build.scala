@@ -26,10 +26,11 @@ object build extends Build {
   , settings = base ++ ReplSettings.all ++ PublishSettings.all ++ InfoSettings.all ++ Seq[Sett](
       name := "rng"
     , libraryDependencies <++= onVersion(
-        all = Seq(scalaz, scalazEffect, scalazCheck, scalacheck, wartremover)
+        all = Seq(scalaz, scalazEffect, scalazCheck, scalacheck)
       , on292 = Seq(specs2_1_12_4_1)
       , on210 = Seq(specs2_1_14)
       )
+    , addCompilerPlugin(wartremover)
     )
   )
 
