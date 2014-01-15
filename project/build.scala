@@ -17,6 +17,7 @@ object build extends Build {
   val scalacheck = "org.scalacheck" %% "scalacheck" % "1.10.0" % "test"
   val specs2_1_12_4_1 = "org.specs2" %% "specs2" % "1.12.4.1" % "test"
   val specs2_1_14 = "org.specs2" %% "specs2" % "1.14" % "test"
+  val wartremover = "org.brianmckenna" % "wartremover" % "0.4" cross CrossVersion.full
 
 
   val rng = Project(
@@ -25,7 +26,7 @@ object build extends Build {
   , settings = base ++ ReplSettings.all ++ PublishSettings.all ++ InfoSettings.all ++ Seq[Sett](
       name := "rng"
     , libraryDependencies <++= onVersion(
-        all = Seq(scalaz, scalazEffect, scalazCheck, scalacheck)
+        all = Seq(scalaz, scalazEffect, scalazCheck, scalacheck, wartremover)
       , on292 = Seq(specs2_1_12_4_1)
       , on210 = Seq(specs2_1_14)
       )
