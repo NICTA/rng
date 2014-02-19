@@ -21,6 +21,10 @@ object RngSpec extends test.Spec {
     Rng.choosedouble(low, high) must beBoundedBy(low, high)
   }
 
+  "boolean must be more or less uniform" >> {
+    Rng.boolean must beUniformBool
+  }
+
   "choosedouble distribution must be more or less uniform" >> {
     Rng.choosedouble(0, 100) must beUniform
   }
@@ -32,6 +36,15 @@ object RngSpec extends test.Spec {
   "choosefloat distribution must be more or less uniform" >> {
     Rng.choosefloat(0, 100) must beUniform
   }
+
+  def beUniformBool: Matcher[Rng[Boolean]] = { generator: Rng[Boolean] =>
+    val frequencies = generator.fill(100000).run.unsafePerformIO
+      .groupBy(t => t).toList
+      .map(x => (x._1, x._2.length))
+      .sortBy(_._1).map(_._2)
+
+    frequencies must contain(beBetween(49800, 50200)).forall
+  }  
 
   def beUniform[T : Numeric]: Matcher[Rng[T]] = { generator: Rng[T] =>
     val n = implicitly[Numeric[T]]
