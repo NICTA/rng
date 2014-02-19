@@ -1,0 +1,7 @@
+Maintenance release
+
+ * the choose operators must have a uniform distribution. fixes [#6](http://github.com/NICTA/rng/issues/6)
+ * changed chooseint to be inclusive. fixes [#10](http://github.com/NICTA/rng/issues/10)
+------ 
+
+The ***rng*** library provides the ability for a user to generate random values of arbitrary type.
