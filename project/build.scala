@@ -8,7 +8,7 @@ object build extends Build {
   val base = Defaults.defaultSettings ++ ScalaSettings.all ++ Seq[Sett](
       name := "rng"
     , organization := "com.nicta"
-    , version := "1.2"
+    , version := "1.3-SNAPSHOT"
   )
 
   val scalaz          = "org.scalaz"       %% "scalaz-core"               % "7.0.0"
