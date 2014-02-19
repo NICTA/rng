@@ -375,7 +375,7 @@ object Rng {
       // using longs to avoid overflows
       val diff = hh.toLong - ll.toLong
       if (diff == 0) ll
-      else           (ll.toLong + math.abs(x.toLong) % diff).toInt
+      else           (ll.toLong + (math.abs(x.toLong) % (diff + 1))).toInt
     })
 
   def oneofL[A](x: NonEmptyList[A]): Rng[A] =
