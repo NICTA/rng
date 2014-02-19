@@ -183,7 +183,7 @@ object Rng {
     insert(())
 
   def boolean: Rng[Boolean] =
-    chooseint(0, 1) map (_ == 0)
+    chooseint(0, 2) map (_ == 0)
 
   def positivedouble: Rng[Double] =
     double map (math.abs(_))
