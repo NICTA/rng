@@ -8,15 +8,15 @@ object build extends Build {
   val base = Defaults.defaultSettings ++ ScalaSettings.all ++ Seq[Sett](
       name := "rng"
     , organization := "com.nicta"
-    , version := "1.3-SNAPSHOT"
+    , version := "1.2.1"
   )
 
-  val scalaz          = "org.scalaz"       %% "scalaz-core"               % "7.0.0"
-  val scalazEffect    = "org.scalaz"       %% "scalaz-effect"             % "7.0.0"
-  val scalazCheck     = "org.scalaz"       %% "scalaz-scalacheck-binding" % "7.0.0"    % "test"
-  val scalacheck      = "org.scalacheck"   %% "scalacheck"                % "1.10.0"   % "test"
+  val scalaz          = "org.scalaz"       %% "scalaz-core"               % "7.0.6"
+  val scalazEffect    = "org.scalaz"       %% "scalaz-effect"             % "7.0.6"
+  val scalazCheck     = "org.scalaz"       %% "scalaz-scalacheck-binding" % "7.0.6"    % "test"
+  val scalacheck      = "org.scalacheck"   %% "scalacheck"                % "1.11.0"   % "test"
   val specs2_1_12_4_1 = "org.specs2"       %% "specs2"                    % "1.12.4.1" % "test"
-  val specs2_2_3_2    = "org.specs2"       %% "specs2"                    % "2.3.2"    % "test"
+  val specs2_2_3_2    = "org.specs2"       %% "specs2"                    % "2.3.10"   % "test"
   val wartremover     = "org.brianmckenna" %% "wartremover"               % "0.7" 
 
   val rng = Project(
