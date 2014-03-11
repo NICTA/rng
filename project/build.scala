@@ -15,7 +15,7 @@ object build extends Build {
   val scalaz          = "org.scalaz"       %% "scalaz-core"               % "7.0.6"
   val scalazEffect    = "org.scalaz"       %% "scalaz-effect"             % "7.0.6"
   val scalazCheck     = "org.scalaz"       %% "scalaz-scalacheck-binding" % "7.0.6"    % "test"
-  val scalacheck      = "org.scalacheck"   %% "scalacheck"                % "1.11.0"   % "test"
+  val scalacheck      = "org.scalacheck"   %% "scalacheck"                % "1.11.3"   % "test"
   val specs2_1_12_4_1 = "org.specs2"       %% "specs2"                    % "1.12.4.1" % "test"
   val specs2_2_3_2    = "org.specs2"       %% "specs2"                    % "2.3.10"   % "test"
   val wartremover     = "org.brianmckenna" %% "wartremover"               % "0.7" 
