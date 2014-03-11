@@ -14,10 +14,9 @@ object build extends Build {
 
   val scalaz          = "org.scalaz"       %% "scalaz-core"               % "7.0.6"
   val scalazEffect    = "org.scalaz"       %% "scalaz-effect"             % "7.0.6"
-  val scalazCheck     = "org.scalaz"       %% "scalaz-scalacheck-binding" % "7.0.6"    % "test" intransitive()
+  val scalazCheck     = "org.scalaz"       %% "scalaz-scalacheck-binding" % "7.0.6"    % "test"
   val specs2_1_12_4_1 = "org.specs2"       %% "specs2"                    % "1.12.4.1" % "test"
-  val specs2_2_3_10   = Seq("org.specs2"   %% "specs2-core"               % "2.3.10"   % "test",
-                            "org.specs2"   %% "specs2-scalacheck"         % "2.3.10"   % "test")
+  val specs2_2_3_2    = "org.specs2"       %% "specs2"               % "2.3.2"   % "test"
   val wartremover     = "org.brianmckenna" %% "wartremover"               % "0.7" 
 
   val rng = Project(
@@ -28,7 +27,7 @@ object build extends Build {
     , libraryDependencies <++= onVersion(
         all = Seq(scalaz, scalazEffect, scalazCheck)
       , on292 = Seq(specs2_1_12_4_1)
-      , on210 = specs2_2_3_10
+      , on210 = Seq(specs2_2_3_2)
       )
     , addCompilerPlugin(wartremover)
     ) ++
