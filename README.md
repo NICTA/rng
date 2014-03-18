@@ -12,20 +12,32 @@ example:
 
 Example usages are provided in the `/examples` source directory.
 
+To use the library, add the following to your SBT configuration:
+
+```scala
+libraryDependencies += "com.nicta" %% "rng" % "1.2.1"
+```
+
+(changing the version number if necessary).
+
 ### `Rng` data type
 
 A generator is represented by the `Rng` data type. A value of the type `Rng[T]` will produce random values of the type
 `T`. For example, to generate random pairs `(X, Y)` and given a `Rng[X]` (call it `randomX`) and a `Rng[Y]`
 (call it `randomY`), use the `zip` function:
 
-    val randomPair: Rng[(X, Y)] =
-      randomX zip randomY
+```scala
+val randomPair: Rng[(X, Y)] =
+  randomX zip randomY
+```
 
 To generate random sum type `(X \/ Y)` and given a `Rng[X]` (call it `randomX`) and a `Rng[Y]` (call it `randomY`), use
 the `either` function:
 
-    val randomEither: Rng[(X \/ Y)] =
-      randomX either randomY
+```scala
+val randomEither: Rng[(X \/ Y)] =
+  randomX either randomY
+```
 
 #### `Rng` structure
 
@@ -151,16 +163,20 @@ Many random generators are provided, such as:
 The `Rng` type constructor forms a *monad* making it trivial to combine existing random generators for user-defined data
 types. For example, consider a data type combined of products and sums:
 
-    case class Person(name: String, age: Option[Int])
+```scala
+case class Person(name: String, age: Option[Int])
+```
 
 A random generator can be constructed by combining random generators for `String`, `Int` and `Option` using a
 *for-comprehension*:
 
-    val randomPerson: Rng[Person] =
-      for {
-        n <- Rng.string
-        a <- Rng.int.option
-      } yield Person(n, a)
+```scala
+val randomPerson: Rng[Person] =
+  for {
+    n <- Rng.string
+    a <- Rng.int.option
+  } yield Person(n, a)
+```
 
 ### Documentation
 
