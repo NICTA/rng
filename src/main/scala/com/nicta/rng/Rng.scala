@@ -384,6 +384,9 @@ object Rng {
   def oneof[A](a: A, as: A*): Rng[A] =
     oneofL(NonEmptyList(a, as: _*))
 
+  def oneofV[A](x: OneAnd[Vector, A]): Rng[A] =
+    chooseint(0, x.tail.length) map (i => if (i === 0) x.head else x.tail(i - 1))
+
   def sequence[T[_], A](x: T[Rng[A]])(implicit T: Traverse[T]): Rng[T[A]] =
     T.sequence(x)
 
