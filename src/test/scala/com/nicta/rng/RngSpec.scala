@@ -37,6 +37,18 @@ object RngSpec extends test.Spec {
     Rng.choosefloat(0, 99) must beUniform
   }
 
+  "oneofL distribution must be more or less uniform" >> {
+    Rng.oneofL(NonEmptyList.nel(0, 1.to(99).toList)) must beUniform
+  }
+
+  "oneof distribution must be more or less uniform" >> {
+    Rng.oneof(0, 1.to(99): _*) must beUniform
+  }
+
+  "oneofV distribution must be more or less uniform" >> {
+    Rng.oneofV(OneAnd(0, 1.to(99).toVector)) must beUniform
+  }
+
   def beUniformBool: Matcher[Rng[Boolean]] = { generator: Rng[Boolean] =>
     val frequencies = generator.fill(100000).run.unsafePerformIO
       .groupBy(t => t).toList
