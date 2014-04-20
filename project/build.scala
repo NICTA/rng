@@ -4,7 +4,7 @@ import Tools.onVersion
 import sbtrelease.ReleasePlugin._
 
 object build extends Build {
-  type Sett = Project.Setting[_]
+  type Sett = Def.Setting[_]
 
   val base = Defaults.defaultSettings ++ ScalaSettings.all ++ Seq[Sett](
       name := "rng"
@@ -16,20 +16,21 @@ object build extends Build {
   val scalazEffect    = "org.scalaz"       %% "scalaz-effect"             % "7.0.6"
   val scalazCheck     = "org.scalaz"       %% "scalaz-scalacheck-binding" % "7.0.6"    % "test"
   val specs2_1_12_4_1 = "org.specs2"       %% "specs2"                    % "1.12.4.1" % "test"
-  val specs2_2_3_2    = "org.specs2"       %% "specs2"               % "2.3.2"   % "test"
-  val wartremover     = "org.brianmckenna" %% "wartremover"               % "0.7" 
+  val specs2_2_3_2    = "org.specs2"       %% "specs2"                    % "2.3.2"    % "test"
+  val specs2_2_3_11   = "org.specs2"       %% "specs2"                    % "2.3.11"   % "test"
+  val wartremover     = "org.brianmckenna" %% "wartremover"               % "0.7"      % "plugin->default(compile)"
 
   val rng = Project(
     id = "rng"
   , base = file(".")
-  , settings = base ++ ReplSettings.all ++ releaseSettings ++ PublishSettings.all ++ InfoSettings.all ++ Seq[Sett](
+  , settings = base ++ ScalaSettings.wartremoverSettings ++ ReplSettings.all ++ releaseSettings ++ PublishSettings.all ++ InfoSettings.all ++ Seq[Sett](
       name := "rng"
     , libraryDependencies <++= onVersion(
         all = Seq(scalaz, scalazEffect, scalazCheck)
       , on292 = Seq(specs2_1_12_4_1)
-      , on210 = Seq(specs2_2_3_2)
+      , on210 = Seq(specs2_2_3_2, wartremover)
+      , on211 = Seq(specs2_2_3_11)
       )
-    , addCompilerPlugin(wartremover)
     ) ++
     net.virtualvoid.sbt.graph.Plugin.graphSettings
   )
@@ -42,7 +43,7 @@ object build extends Build {
       name := "rng-examples"
     , fork in run := true
     , libraryDependencies ++= Seq(scalaz, scalazEffect)
-    , javaOptions in run <++= (fullClasspath in Runtime) map { cp => Seq("-cp", sbt.Build.data(cp).mkString(":")) }
+    , javaOptions in run <++= (fullClasspath in Runtime) map { cp => Seq("-cp", sbt.Attributed.data(cp).mkString(":")) }
     )
   )
 }
