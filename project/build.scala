@@ -44,6 +44,7 @@ object build extends Build {
     , fork in run := true
     , libraryDependencies ++= Seq(scalaz, scalazEffect)
     , javaOptions in run <++= (fullClasspath in Runtime) map { cp => Seq("-cp", sbt.Attributed.data(cp).mkString(":")) }
+    , resolvers ++= Seq(Resolver.typesafeRepo("releases"))
     )
   )
 }
