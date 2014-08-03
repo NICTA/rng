@@ -70,7 +70,7 @@ object RngSpec extends test.Spec {
   }
 
   def beBoundedBy[T : Numeric](low: T, high: T): Matcher[Rng[T]] = { generator: Rng[T] =>
-    val (l, h) = if (low <= high) (low, high) else (high, low)
+    val (l, h) = if (implicitly[Numeric[T]].lt(low, high)) (low, high) else (high, low)
     generator.run.unsafePerformIO must beBetween(l, h)
   }
 
