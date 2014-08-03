@@ -3,7 +3,7 @@ package rng
 
 import scalaz._, Scalaz._, Free._
 
-sealed trait RngOp[+A] {
+sealed trait RngOp[A] {
   def map[B](f: A => B): RngOp[B] =
     this match {
       case NextBits(b, n) => NextBits(b, f compose n)
@@ -11,7 +11,7 @@ sealed trait RngOp[+A] {
     }
 
   def lift: Rng[A] =
-    Rng(Suspend(map(Return(_))))
+    Rng(liftF(map(identity)))
 
   def coflatMap[B](f: RngOp[A] => B): RngOp[B] =
     this match {
@@ -46,8 +46,8 @@ sealed trait RngOp[+A] {
       case SetSeed(n, _) => Some(n)
     }
 }
-private case class NextBits[+A](b: Int, n: Int => A) extends RngOp[A]
-private case class SetSeed[+A](b: Long, n: () => A) extends RngOp[A]
+private case class NextBits[A](b: Int, n: Int => A) extends RngOp[A]
+private case class SetSeed[A](b: Long, n: () => A) extends RngOp[A]
 
 object RngOp {
   def nextbits[A](b: Int, n: Int => A): RngOp[A] =
@@ -68,7 +68,7 @@ object RngOp {
   def distributeRK[A, B](a: RngOp[A => B]): Kleisli[RngOp, A, B] =
     Kleisli(distributeR(a))
 
-  def distributeK[F[+_]: Distributive, A, B](a: RngOp[Kleisli[F, A, B]]): Kleisli[F, A, RngOp[B]] =
+  def distributeK[F[_]: Distributive, A, B](a: RngOp[Kleisli[F, A, B]]): Kleisli[F, A, RngOp[B]] =
     distribute[({type f[x] = Kleisli[F, A, x]})#f, B](a)
 
   implicit val RngOpComonad: Comonad[RngOp] =
@@ -79,7 +79,7 @@ object RngOp {
         a coflatMap f
       def copoint[A](x: RngOp[A]) =
         x.extract
-      def cojoin[A](x: RngOp[A]) =
+      override def cojoin[A](x: RngOp[A]) =
         x.duplicate
     }
 

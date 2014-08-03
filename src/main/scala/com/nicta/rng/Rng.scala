@@ -4,7 +4,7 @@ import Rng._
 
 import scalaz._, Free._, Scalaz._, NonEmptyList._, Digit._, Leibniz._, Validation._, effect._
 
-sealed trait Rng[+A] {
+sealed trait Rng[A] {
   val free: Free[RngOp, A]
 
   import Rng._
@@ -27,8 +27,8 @@ sealed trait Rng[+A] {
   def zipWith[B, C](r: Rng[B])(f: A => B => C): Rng[C] =
     r.ap(map(f))
 
-  def foldRun[B, AA >: A](b: B)(f: (B, RngOp[Rng[AA]]) => (B, Rng[AA])): (B, AA) =
-    free.foldRun[B, AA](b)((bb, t) => f(bb, t map (Rng(_))) :-> (_.free))
+  def foldRun[B](b: B)(f: (B, RngOp[Rng[A]]) => (B, Rng[A])): (B, A) =
+    free.foldRun[B](b)((bb, t) => f(bb, t map (Rng(_))) :-> (_.free))
 
   def resume: RngResume[A] =
     free.resume match {
@@ -66,8 +66,8 @@ sealed trait Rng[+A] {
   def mapr(f: RngOp ~> RngOp): Rng[A] =
     Rng(free mapFirstSuspension f)
 
-  def go[AA >: A](f: RngOp[Rng[AA]] => Rng[AA]): AA =
-    free.go[AA](r => f(r map (Rng(_))).free)
+  def go(f: RngOp[Rng[A]] => Rng[A]): A =
+    free.go(r => f(r map (Rng(_))).free)
 
   def |+|[AA >: A](x: Rng[AA])(implicit S: Semigroup[AA]): Rng[AA] =
     for {
@@ -75,15 +75,15 @@ sealed trait Rng[+A] {
       b <- x
     } yield S.append(a, b)
 
-  def function[B, AA >: A](implicit q: CoRng[B]): Rng[B => AA] =
+  def function[B](implicit q: CoRng[B]): Rng[B => A] =
     Rng(resume match {
       case RngCont(x) =>
-        Suspend(x map (d => d.function[B, AA].free map (e => b => e(x.storepos match {
+        x.extract.function[B].free map (e => b => e(x.storepos match {
           case None => b
           case Some(p) => q(p, b)
-        }))))
+        }))
       case RngTerm(x) =>
-        Return(_ => x)
+        point(_ => x)
     })
 
   def fill(n: Int): Rng[List[A]] =
@@ -127,7 +127,7 @@ sealed trait Rng[+A] {
     either(x)
 
   def validation[X](x: Rng[X]): Rng[A \?/ X] =
-    boolean flatMap (p => if(p) map(_.fail) else x map (_.success))
+    boolean flatMap (p => if(p) map(_.failure) else x map (_.success))
 
   def \?/[X](x: Rng[X]): Rng[A \?/ X] =
     validation(x)
@@ -346,7 +346,7 @@ object Rng {
     } yield (aa, bb, cc)
 
   def insert[A](a: A): Rng[A] =
-    Rng(Return(a))
+    Rng(point(a))
 
   def chooselong(l: Long, h: Long): Rng[Long] =
     long map (x => {
@@ -379,7 +379,7 @@ object Rng {
     })
 
   def oneofL[A](x: NonEmptyList[A]): Rng[A] =
-    chooseint(0, x.length - 1) map (x toList _)
+    chooseint(0, x.size - 1) map (x toList _)
 
   def oneof[A](a: A, as: A*): Rng[A] =
     oneofL(NonEmptyList(a, as: _*))
@@ -402,7 +402,7 @@ object Rng {
   def distributeRK[A, B](a: Rng[A => B]): Kleisli[Rng, A, B] =
     Kleisli(distributeR(a))
 
-  def distributeK[F[+_]: Distributive, A, B](a: Rng[Kleisli[F, A, B]]): Kleisli[F, A, Rng[B]] =
+  def distributeK[F[_]: Distributive, A, B](a: Rng[Kleisli[F, A, B]]): Kleisli[F, A, Rng[B]] =
     distribute[({type f[x] = Kleisli[F, A, x]})#f, B](a)
 
   def frequencyL[A](x: NonEmptyList[(Int, Rng[A])]): Rng[A] = {
