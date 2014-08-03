@@ -7,4 +7,4 @@ scala:
 jdk:
   - oraclejdk7
 
-script: sbt -sbt-version 0.13.0 -scala-version $TRAVIS_SCALA_VERSION 'test' 'examples/compile'
+script: sbt -sbt-version 0.13.6-M1 -scala-version $TRAVIS_SCALA_VERSION 'test' 'examples/compile'
