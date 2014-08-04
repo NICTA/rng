@@ -32,7 +32,7 @@ object RngSpec extends test.Spec {
   }
 
   "choosedouble distribution must be more or less uniform" >> {
-    Rng.choosedouble(0, 99) must beUniform
+    Rng.choosedouble(-50, 50) must beUniform
   }
 
   "choosefloat must return a value between low and high" >> prop { (low: Float, high: Float) =>
