@@ -40,7 +40,7 @@ object RngSpec extends test.Spec {
   }
 
   "choosefloat distribution must be more or less uniform" >> {
-    Rng.choosefloat(0, 99) must beUniform
+    Rng.choosefloat(-50, 50) must beUniform
   }
 
   "oneofL distribution must be more or less uniform" >> {
