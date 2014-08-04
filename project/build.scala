@@ -1,6 +1,8 @@
 import sbt._
 import Keys._
 import sbtrelease.ReleasePlugin._
+import xerial.sbt.Sonatype._
+import SonatypeKeys._
 
 object build extends Build {
   type Sett = Def.Setting[_]
@@ -8,7 +10,6 @@ object build extends Build {
   val base = Defaults.defaultSettings ++ ScalaSettings.all ++ Seq[Sett](
       name := "rng"
     , organization := "com.nicta"
-    , version := "1.2.1"
   )
 
   val scalaz          = "org.scalaz"       %% "scalaz-core"               % "7.1.0"
@@ -23,7 +24,8 @@ object build extends Build {
       name := "rng"
     , libraryDependencies ++= Seq(scalaz, scalazEffect, scalazCheck, specs2)
     ) ++
-    net.virtualvoid.sbt.graph.Plugin.graphSettings
+    net.virtualvoid.sbt.graph.Plugin.graphSettings ++
+    sonatypeSettings
   )
 
   val examples = Project(
