@@ -3,13 +3,8 @@ package com.nicta.rng
 import scalaz._, Scalaz._, effect._
 import scalaz.scalacheck.ScalazProperties._
 import org.specs2.matcher._
-import org.specs2.execute.AsResult
-import org.scalacheck.Properties
 
 object RngSpec extends test.Spec {
-  implicit def propertiesAsResult(implicit p: Parameters): AsResult[Properties] = new AsResult[Properties] {
-    def asResult(prop: =>Properties) = checkProp(prop)(p)
-  }
 
   "Rng" should {
     "satisfy monad laws" ! monad.laws[Rng]
@@ -75,7 +70,7 @@ object RngSpec extends test.Spec {
   }
 
   def beBoundedBy[T : Numeric](low: T, high: T): Matcher[Rng[T]] = { generator: Rng[T] =>
-    val (l, h) = if (low <= high) (low, high) else (high, low)
+    val (l, h) = if (implicitly[Numeric[T]].lt(low, high)) (low, high) else (high, low)
     generator.run.unsafePerformIO must beBetween(l, h)
   }
 

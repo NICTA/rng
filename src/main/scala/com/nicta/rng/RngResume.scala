@@ -3,7 +3,7 @@ package rng
 
 import scalaz._, Scalaz._, Free._
 
-sealed trait RngResume[+A] {
+sealed trait RngResume[A] {
   def map[B](f: A => B): RngResume[B] =
     this match {
       case RngCont(x) =>
@@ -15,9 +15,9 @@ sealed trait RngResume[+A] {
   def free: Rng[A] =
     Rng(this match {
       case RngCont(x) =>
-        Suspend(x map (_.free))
+        x.extract.free
       case RngTerm(x) =>
-        Return(x)
+        point(x)
     })
 
   def term: Option[A] =
@@ -37,8 +37,8 @@ sealed trait RngResume[+A] {
     }
 
 }
-case class RngCont[+A](x: RngOp[Rng[A]]) extends RngResume[A]
-case class RngTerm[+A](x: A) extends RngResume[A]
+case class RngCont[A](x: RngOp[Rng[A]]) extends RngResume[A]
+case class RngTerm[A](x: A) extends RngResume[A]
 
 object RngResume {
   implicit val RngResumeFunctor: Functor[RngResume] =
@@ -56,7 +56,7 @@ object RngResume {
   def distributeRK[A, B](a: RngResume[A => B]): Kleisli[RngResume, A, B] =
     Kleisli(distributeR(a))
 
-  def distributeK[F[+_]: Distributive, A, B](a: RngResume[Kleisli[F, A, B]]): Kleisli[F, A, RngResume[B]] =
+  def distributeK[F[_]: Distributive, A, B](a: RngResume[Kleisli[F, A, B]]): Kleisli[F, A, RngResume[B]] =
     distribute[({type f[x] = Kleisli[F, A, x]})#f, B](a)
 
 }

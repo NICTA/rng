@@ -1,7 +1,7 @@
 package com.nicta
 package rng
 
-import scalaz._
+import scalaz._, Scalaz._
 
 sealed trait Size {
   val value: Option[Int]
