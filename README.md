@@ -15,7 +15,7 @@ Example usages are provided in the `/examples` source directory.
 To use the library, add the following to your SBT configuration:
 
 ```scala
-libraryDependencies += "com.nicta" %% "rng" % "1.2.1"
+libraryDependencies += "com.nicta" %% "rng" % "1.3.0"
 ```
 
 (changing the version number if necessary).
