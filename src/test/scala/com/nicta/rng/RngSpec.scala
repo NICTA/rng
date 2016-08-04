@@ -59,6 +59,15 @@ object RngSpec extends test.Spec {
     frequencies must contain(beBetween(49800, 50200)).forall
   }
 
+  def beUniformBool: Matcher[Rng[Boolean]] = { generator: Rng[Boolean] =>
+    val frequencies = generator.fill(100000).run.unsafePerformIO
+      .groupBy(t => t).toList
+      .map(x => (x._1, x._2.length))
+      .sortBy(_._1).map(_._2)
+
+    frequencies must contain(beBetween(49800, 50200)).forall
+  }  
+
   def beUniform[T : Numeric]: Matcher[Rng[T]] = { generator: Rng[T] =>
     val n = implicitly[Numeric[T]]
     val frequencies = generator.fill(100000).run.unsafePerformIO
