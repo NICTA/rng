@@ -12,10 +12,10 @@ object build extends Build {
     , organization := "com.nicta"
   )
 
-  val scalaz          = "org.scalaz"       %% "scalaz-core"               % "7.1.0"
-  val scalazEffect    = "org.scalaz"       %% "scalaz-effect"             % "7.1.0"
-  val scalazCheck     = "org.scalaz"       %% "scalaz-scalacheck-binding" % "7.1.0"    % "test"
-  val specs2          = "org.specs2"       %% "specs2"                    % "2.4"      % "test"
+  val scalaz          = "org.scalaz"       %% "scalaz-core"               % "7.2.15"
+  val scalazEffect    = "org.scalaz"       %% "scalaz-effect"             % "7.2.15"
+  val scalazCheck     = "org.scalaz"       %% "scalaz-scalacheck-binding" % "7.2.15"    % "test"
+  val specs2          = "org.specs2"       %% "specs2-core"               % "3.9.5"      % "test"
 
   val rng = Project(
     id = "rng"
