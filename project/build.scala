@@ -12,17 +12,22 @@ object build extends Build {
     , organization := "com.nicta"
   )
 
-  val scalaz          = "org.scalaz"       %% "scalaz-core"               % "7.1.0"
-  val scalazEffect    = "org.scalaz"       %% "scalaz-effect"             % "7.1.0"
-  val scalazCheck     = "org.scalaz"       %% "scalaz-scalacheck-binding" % "7.1.0"    % "test"
-  val specs2          = "org.specs2"       %% "specs2"                    % "2.4"      % "test"
+  val scalazVersion = "7.2.15"
+  val specs2Version = "3.9.5"
+
+  val scalaz          = "org.scalaz"       %% "scalaz-core"               % scalazVersion
+  val scalazEffect    = "org.scalaz"       %% "scalaz-effect"             % scalazVersion
+  val scalazCheck     = "org.scalaz"       %% "scalaz-scalacheck-binding" % scalazVersion    % "test"
+  val specs2          = "org.specs2"       %% "specs2-core"               % specs2Version    % "test"
+  val specs2Check     = "org.specs2"       %% "specs2-scalacheck"         % specs2Version    % "test"
+  val scalaCheck      = "org.scalacheck"   %% "scalacheck"                % "1.13.4"         % "test"
 
   val rng = Project(
     id = "rng"
   , base = file(".")
   , settings = base ++ ReplSettings.all ++ releaseSettings ++ PublishSettings.all ++ InfoSettings.all ++ Seq[Sett](
       name := "rng"
-    , libraryDependencies ++= Seq(scalaz, scalazEffect, scalazCheck, specs2)
+    , libraryDependencies ++= Seq(scalaz, scalazEffect, scalazCheck, specs2, specs2Check, scalaCheck)
     ) ++
     net.virtualvoid.sbt.graph.Plugin.graphSettings ++
     sonatypeSettings

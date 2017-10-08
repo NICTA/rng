@@ -8,7 +8,7 @@ object RngSpec extends test.Spec {
 
   "Rng" should {
     "satisfy monad laws" ! monad.laws[Rng]
-  }; endp
+  }
 
   "chooseint must return a value between low and high" >> prop { (low: Int, high: Int) =>
     Rng.chooseint(low, high) must beBoundedBy(low, high)
@@ -39,7 +39,7 @@ object RngSpec extends test.Spec {
   }
 
   "oneofL distribution must be more or less uniform" >> {
-    Rng.oneofL(NonEmptyList.nel(0, 1.to(99).toList)) must beUniform
+    Rng.oneofL(NonEmptyList.nel(0, IList(1.to(99):_*))) must beUniform
   }
 
   "oneof distribution must be more or less uniform" >> {
