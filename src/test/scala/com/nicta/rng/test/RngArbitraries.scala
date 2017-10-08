@@ -8,7 +8,7 @@ import org.scalacheck.{Gen, Arbitrary}, Arbitrary.arbitrary, Gen.{frequency, one
 trait RngArbitraries {
 
   implicit def RngIntArbitrary: Arbitrary[Rng[Int]] =
-    Arbitrary(Gen.parameterized(params => Gen.const(Rng.setseed(params.rng.nextInt) >> Rng.int)))
+    Arbitrary(Arbitrary.arbitrary[Int].map(seed => Rng.setseed(seed) >> Rng.int))
 
   implicit def RngIntFunctionArbitrary: Arbitrary[Rng[Int => Int]] =
     Arbitrary(Gen.parameterized(params => Gen.const(Rng.int.function[Int](CoRng(_ * _)))))
