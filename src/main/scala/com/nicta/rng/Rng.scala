@@ -89,6 +89,9 @@ sealed trait Rng[A] {
   def fill(n: Int): Rng[List[A]] =
     sequence(List.fill(n)(this))
 
+  def fillIList(n: Int): Rng[IList[A]] =
+    sequence(IList.fill(n)(this))
+
   def list(s: Size): Rng[List[A]] =
     for {
       n <- s.value match {
@@ -105,7 +108,7 @@ sealed trait Rng[A] {
              case None => int
              case Some(y) => chooseint(0, y)
            }
-      a <- fill(n)
+      a <- fillIList(n)
     } yield nel(z, a)
 
   def vector(s: Size): Rng[Vector[A]] =
@@ -312,7 +315,7 @@ object Rng {
     numerics1(z) map (_.toList.mkString)
 
   def alphanumericstring(z: Size): Rng[String] =
-    alphanumerics(z) map (_.mkString)
+    alphanumerics(z) map (_.toList.mkString)
 
   def alphanumericstring1(z: Size): Rng[String] =
     alphanumerics1(z) map (_.toList.mkString)
@@ -321,7 +324,7 @@ object Rng {
     for {
       a <- alpha
       b <- alphanumerics(if(z exists (_ < 1)) z.inc else z.dec)
-    } yield nel(a, b)
+    } yield nel(a, IList.fromList(b))
 
   def identifierstring(z: Size): Rng[String] =
     identifier(z) map (_.toList.mkString)
@@ -330,7 +333,7 @@ object Rng {
     for {
       a <- upper
       b <- lowers(if(z exists (_ < 1)) z.inc else z.dec)
-    } yield nel(a, b)
+    } yield nel(a, IList.fromList(b))
 
   def propernounstring(z: Size): Rng[String] =
     propernoun(z) map (_.toList.mkString)
@@ -416,8 +419,8 @@ object Rng {
       if(n <= q)
         r
       else l.tail match {
-        case Nil => r
-        case e::es => pick(n - q, nel(e, es))
+        case INil() => r
+        case ICons(e, es) => pick(n - q, nel(e, es))
       }
     }
 
